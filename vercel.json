@@ -1,5 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    {
+      "src": "/google12ab34cd56ef7890.html",
+      "dest": "/google12ab34cd56ef7890.html",
+      "headers": {
+        "cache-control": "no-cache"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 }
