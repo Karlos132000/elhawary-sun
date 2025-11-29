@@ -1,60 +1,64 @@
-import { FaCogs, FaTools, FaSolarPanel, FaHotTub } from "react-icons/fa";
+import { FaSun, FaWater, FaTools } from "react-icons/fa";
+
+import solarSystemImg from "../assets/services/solar-system.jpg";
+import solarHeaterImg from "../assets/services/solar-water-heater.jpg";
+import maintenanceImg from "../assets/services/solar-maintenance.jpg";
 
 export default function Services() {
     return (
-        <section className="bg-white py-20" dir="rtl">
-            <div className="max-w-7xl mx-auto px-6 text-center">
+        <section className="py-20 bg-gray-50" dir="rtl">
+            <div className="max-w-7xl mx-auto px-6">
 
-                {/* عنوان الصفحة */}
-                <h2 className="text-4xl font-bold mb-12 relative inline-block">
-                    خدماتنا
-                    <span className="block w-24 h-1 bg-gold mx-auto mt-3 rounded-full"></span>
+                <h2 className="text-3xl font-bold text-center text-gold mb-12">
+                    أهم خدماتنا
                 </h2>
 
-                {/* كروت الخدمات */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
 
-                    {/* خدمة 1 */}
-                    <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200
-                                    hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                        <FaSolarPanel className="text-5xl text-gold mx-auto mb-4" />
-                        <h3 className="text-2xl font-semibold mb-2">تركيب محطات طاقة شمسية</h3>
-                        <p className="text-gray-600 text-lg">
-                            تركيب كامل لمنظومات الطاقة الشمسية بجودة عالية وضمان ممتاز.
-                        </p>
+                    {/* 1 */}
+                    <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
+                        <img src={solarSystemImg} className="h-56 w-full object-cover" />
+                        <div className="p-5">
+                            <div className="flex items-center gap-3 mb-2">
+                                <FaSun className="text-gold text-2xl" />
+                                <h3 className="text-xl font-bold">محطات الطاقة الشمسية</h3>
+                            </div>
+                            <p className="text-gray-600 text-sm">
+                                تصميم وتوريد وتنفيذ محطات طاقة شمسية عالية الكفاءة.
+                            </p>
+                        </div>
                     </div>
 
-                    {/* خدمة 2 */}
-                    <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200
-                                    hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                        <FaHotTub className="text-5xl text-gold mx-auto mb-4" />
-                        <h3 className="text-2xl font-semibold mb-2">تركيب سخانات شمسية</h3>
-                        <p className="text-gray-600 text-lg">
-                            تركيب أنظمة السخانات الشمسية للمنازل والمنشآت.
-                        </p>
+                    {/* 2 */}
+                    <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
+                        <img src={solarHeaterImg} className="h-56 w-full object-cover" />
+                        <div className="p-5">
+                            <div className="flex items-center gap-3 mb-2">
+                                <FaWater className="text-blue-500 text-2xl" />
+                                <h3 className="text-xl font-bold">سخانات الطاقة الشمسية</h3>
+                            </div>
+                            <p className="text-gray-600 text-sm">
+                                توريد وتركيب سخانات شمسية عالية الجودة.
+                            </p>
+                        </div>
                     </div>
 
-                    {/* خدمة 3 */}
-                    <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200
-                                    hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                        <FaCogs className="text-5xl text-gold mx-auto mb-4" />
-                        <h3 className="text-2xl font-semibold mb-2">تصميم الأنظمة</h3>
-                        <p className="text-gray-600 text-lg">
-                            تصميم احترافي للأنظمة والمتطلبات الهندسية للطاقة الشمسية.
-                        </p>
-                    </div>
-
-                    {/* خدمة 4 */}
-                    <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200
-                                    hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                        <FaTools className="text-5xl text-gold mx-auto mb-4" />
-                        <h3 className="text-2xl font-semibold mb-2">صيانة الإنفرترات والبطاريات</h3>
-                        <p className="text-gray-600 text-lg">
-                            صيانة وتشخيص الأعطال وتحسين كفاءة النظام.
-                        </p>
+                    {/* 3 */}
+                    <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
+                        <img src={maintenanceImg} className="h-56 w-full object-cover" />
+                        <div className="p-5">
+                            <div className="flex items-center gap-3 mb-2">
+                                <FaTools className="text-gray-700 text-2xl" />
+                                <h3 className="text-xl font-bold">الصيانة والدعم الفني</h3>
+                            </div>
+                            <p className="text-gray-600 text-sm">
+                                صيانة دورية – تنظيف – متابعة أداء – تشخيص أعطال.
+                            </p>
+                        </div>
                     </div>
 
                 </div>
+
             </div>
         </section>
     );
