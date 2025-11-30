@@ -1,20 +1,22 @@
+// src/firebase.js
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { getAuth } from "firebase/auth";
 
+// مهم: لازم .appspot.com مش .firebasestorage.app
 const firebaseConfig = {
     apiKey: "AIzaSyCUUwEqUF_TeAHGLS9fQg4HulnRP8zmUcI",
     authDomain: "elhawary-sun.firebaseapp.com",
     projectId: "elhawary-sun",
-    storageBucket: "elhawary-sun.firebasestorage.app",
+    storageBucket: "elhawary-sun.appspot.com", // ← عدّلها كده
     messagingSenderId: "94642668824",
-    appId: "1:94642668824:web:b49bc1d420f36cbbf00a6d",
-    measurementId: "G-EYGXEWZF04"
+    appId: "1:94642668824:web:33c2239179f2794ef00a6d",
+    // مفيش داعي للـ measurementId هنا
 };
 
 const app = initializeApp(firebaseConfig);
 
+export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-export const auth = getAuth(app);

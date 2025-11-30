@@ -1,97 +1,51 @@
-// src/pages/AdminProducts.jsx
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { db, storage } from "../firebase";
 import {
     collection,
     addDoc,
-    getDocs,
     deleteDoc,
     doc,
     updateDoc,
-    Timestamp,
+    onSnapshot,
+    serverTimestamp,
+    query,
+    orderBy,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
+
+// اختياري: صورة افتراضية لو المنتج بدون صورة
+const PLACEHOLDER =
+    "https://via.placeholder.com/800x400?text=%D8%A8%D8%AF%D9%88%D9%86+%D8%B5%D9%88%D8%B1%D8%A9";
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
     const [editProduct, setEditProduct] = useState(null);
 
+    // نموذج
     const [title, setTitle] = useState("");
     const [price, setPrice] = useState("");
     const [desc, setDesc] = useState("");
     const [imageFile, setImageFile] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
-    const loadProducts = useCallback(async () => {
-        setLoading(true);
-        const snap = await getDocs(collection(db, "products"));
-        const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        setProducts(data);
-        setLoading(false);
+    // ليف ستريم للمنتجات
+    useEffect(() => {
+        const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            setProducts(data);
+        });
+        return () => unsub();
     }, []);
 
-    useEffect(() => {
-        loadProducts();
-    }, [loadProducts]);
-
-    const uploadImage = async (file) => {
-        const storageRef = ref(storage, `products/${Date.now()}-${file.name}`);
-        await uploadBytes(storageRef, file);
-        return await getDownloadURL(storageRef);
-    };
-
-    const handleSave = async (e) => {
-        e.preventDefault();
-        try {
-            setSaving(true);
-            let imageUrl = editProduct?.imageUrl || "";
-
-            if (imageFile) {
-                imageUrl = await uploadImage(imageFile);
-            }
-
-            if (editProduct) {
-                await updateDoc(doc(db, "products", editProduct.id), {
-                    title,
-                    price,
-                    description: desc,
-                    imageUrl,
-                    updatedAt: Timestamp.now(),
-                });
-            } else {
-                await addDoc(collection(db, "products"), {
-                    title,
-                    price,
-                    description: desc,
-                    imageUrl,
-                    createdAt: Timestamp.now(),
-                });
-            }
-
-            resetForm();
-            await loadProducts();
-            // مفيش alerts مزعجة — خلّي التجربة نظيفة
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const deleteProduct = async (id) => {
-        if (!confirm("هل تريد حذف المنتج؟")) return;
-        await deleteDoc(doc(db, "products", id));
-        await loadProducts();
-    };
-
-    const startEdit = (p) => {
-        setEditProduct(p);
-        setTitle(p.title);
-        setPrice(p.price);
-        setDesc(p.description);
-        setImageFile(null);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+    // رفع صورة إن وُجدت وإرجاع الـ URL، وإلا يرجع القديم
+    const uploadImageIfAny = async () => {
+        if (!imageFile) return editProduct?.imageUrl || "";
+        const path = `products/${Date.now()}_${imageFile.name}`;
+        const storageRef = ref(storage, path);
+        const snap = await uploadBytes(storageRef, imageFile);
+        const url = await getDownloadURL(snap.ref);
+        return url;
     };
 
     const resetForm = () => {
@@ -100,28 +54,69 @@ export default function AdminProducts() {
         setPrice("");
         setDesc("");
         setImageFile(null);
+        setUploading(false);
     };
 
-    const handleLogout = async () => {
-        await signOut(auth);
-        location.assign("/admin/login");
+    const startEdit = (p) => {
+        setEditProduct(p);
+        setTitle(p.title || "");
+        setPrice(String(p.price ?? ""));
+        setDesc(p.description || "");
+        setImageFile(null);
+    };
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+        setUploading(true);
+        try {
+            const imageUrl = await uploadImageIfAny();
+
+            if (editProduct) {
+                // تعديل
+                const payload = {
+                    title: title.trim(),
+                    price: Number(price) || 0,
+                    description: desc.trim(),
+                    // لو ما فيش صورة جديدة، هنحتفظ بالقديمة
+                    imageUrl: imageUrl || editProduct.imageUrl || "",
+                    updatedAt: serverTimestamp(),
+                };
+                await updateDoc(doc(db, "products", editProduct.id), payload);
+            } else {
+                // إضافة
+                const payload = {
+                    title: title.trim(),
+                    price: Number(price) || 0,
+                    description: desc.trim(),
+                    imageUrl: imageUrl || "",
+                    createdAt: serverTimestamp(),
+                };
+                await addDoc(collection(db, "products"), payload);
+            }
+
+            resetForm();
+        } catch (err) {
+            console.error(err);
+            alert("❌ حصل خطأ أثناء الحفظ/الرفع.");
+            setUploading(false);
+        }
+    };
+
+    const deleteProduct = async (id) => {
+        if (!confirm("هل تريد حذف هذا المنتج؟")) return;
+        await deleteDoc(doc(db, "products", id));
     };
 
     return (
-        <div className="p-6 md:p-10" dir="rtl">
-            <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold text-gold">إدارة المنتجات</h1>
-                <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded">
-                    تسجيل الخروج
-                </button>
-            </div>
+        <div className="p-6" dir="rtl">
+            <h1 className="text-3xl font-bold text-gold mb-6">إدارة المنتجات</h1>
 
-            {/* form */}
+            {/* فورم إضافة/تعديل */}
             <form
                 onSubmit={handleSave}
-                className="bg-white p-6 rounded-xl shadow-lg mb-10 space-y-4 max-w-xl"
+                className="bg-white p-6 rounded-xl shadow-lg mb-10 space-y-3 max-w-sm ml-auto"
             >
-                <h2 className="text-xl font-bold">
+                <h2 className="text-xl font-bold mb-2">
                     {editProduct ? "تعديل المنتج" : "إضافة منتج جديد"}
                 </h2>
 
@@ -148,6 +143,7 @@ export default function AdminProducts() {
                     className="w-full p-3 border rounded"
                     value={desc}
                     onChange={(e) => setDesc(e.target.value)}
+                    rows={3}
                     required
                 />
 
@@ -158,61 +154,75 @@ export default function AdminProducts() {
                     accept="image/*"
                 />
 
-                <div className="flex gap-3">
+                <button
+                    className="bg-gray-600 text-white w-full py-2 rounded font-bold disabled:opacity-60"
+                    disabled={uploading}
+                    title={uploading ? "جار الرفع…" : ""}
+                >
+                    {uploading ? "جار الرفع والحفظ…" : "حفظ"}
+                </button>
+
+                {editProduct && (
                     <button
-                        disabled={saving}
-                        className="bg-gold px-4 py-2 rounded font-bold disabled:opacity-60"
+                        type="button"
+                        className="w-full py-2 rounded font-bold border mt-2"
+                        onClick={resetForm}
                     >
-                        {editProduct ? "حفظ التعديل" : "إضافة المنتج"}
+                        إلغاء التعديل
                     </button>
-                    {editProduct && (
-                        <button
-                            type="button"
-                            onClick={resetForm}
-                            className="px-4 py-2 rounded border"
-                        >
-                            إلغاء التعديل
-                        </button>
-                    )}
-                </div>
+                )}
             </form>
 
-            {/* list */}
-            {loading ? (
-                <div className="text-gray-600">جار تحميل المنتجات…</div>
-            ) : products.length === 0 ? (
-                <p className="text-gray-600">لا توجد منتجات حالياً.</p>
-            ) : (
-                <div className="grid md:grid-cols-3 gap-6">
-                    {products.map((p) => (
-                        <div key={p.id} className="bg-white shadow rounded-xl overflow-hidden">
-                            {p.imageUrl && (
-                                <img src={p.imageUrl} className="h-48 w-full object-cover" alt={p.title} />
+            {/* عرض المنتجات */}
+            <div className="grid md:grid-cols-2 gap-8">
+                {products.map((p) => (
+                    <div
+                        key={p.id}
+                        className="bg-white rounded-xl shadow overflow-hidden"
+                    >
+                        <div className="h-64 bg-gray-100 flex items-center justify-center">
+                            {/* صورة أو Placeholder */}
+                            {p.imageUrl ? (
+                                <img
+                                    src={p.imageUrl}
+                                    alt={p.title}
+                                    className="w-full h-64 object-cover"
+                                />
+                            ) : (
+                                <img
+                                    src={PLACEHOLDER}
+                                    alt="no-image"
+                                    className="w-full h-64 object-cover"
+                                />
                             )}
-                            <div className="p-4">
-                                <h3 className="text-xl font-bold">{p.title}</h3>
-                                <p className="text-gray-700">{p.description}</p>
-                                <p className="text-gold font-bold mt-2">{p.price} جنيه</p>
+                        </div>
 
-                                <div className="flex justify-between mt-3">
-                                    <button
-                                        onClick={() => startEdit(p)}
-                                        className="bg-blue-500 text-white px-3 py-1 rounded"
-                                    >
-                                        تعديل
-                                    </button>
-                                    <button
-                                        onClick={() => deleteProduct(p.id)}
-                                        className="bg-red-500 text-white px-3 py-1 rounded"
-                                    >
-                                        حذف
-                                    </button>
-                                </div>
+                        <div className="p-4">
+                            <h3 className="text-xl font-bold">{p.title}</h3>
+                            <p className="text-gray-600">{p.description}</p>
+                            <p className="text-gold font-bold mt-2">{p.price} جنيه</p>
+
+                            <div className="flex justify-between mt-3">
+                                <button
+                                    onClick={() => startEdit(p)}
+                                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                                >
+                                    تعديل
+                                </button>
+                                <button
+                                    onClick={() => deleteProduct(p.id)}
+                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                >
+                                    حذف
+                                </button>
                             </div>
                         </div>
-                    ))}
-                </div>
-            )}
+                    </div>
+                ))}
+                {products.length === 0 && (
+                    <p className="text-gray-600">لا توجد منتجات حالياً.</p>
+                )}
+            </div>
         </div>
     );
 }
