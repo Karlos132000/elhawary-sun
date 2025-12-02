@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { db, storage } from "../firebase";
+import { db } from "../firebase";
 import {
     collection,
     addDoc,
@@ -11,11 +11,33 @@ import {
     query,
     orderBy,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // اختياري: صورة افتراضية لو المنتج بدون صورة
 const PLACEHOLDER =
     "https://via.placeholder.com/800x400?text=%D8%A8%D8%AF%D9%88%D9%86+%D8%B5%D9%88%D8%B1%D8%A9";
+
+// ✅ دالة رفع الصورة على Imgbb
+async function uploadImageToImgbb(file) {
+    const apiKey = "8db50b841379d1a0048725467724bf21"; // API KEY من Imgbb
+
+    const form = new FormData();
+    form.append("image", file);
+
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: "POST",
+        body: form,
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+        console.error("Imgbb error:", data);
+        throw new Error("فشل رفع الصورة على Imgbb");
+    }
+
+    // رابط الصورة النهائي
+    return data.data.url;
+}
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
@@ -38,16 +60,6 @@ export default function AdminProducts() {
         return () => unsub();
     }, []);
 
-    // رفع صورة إن وُجدت وإرجاع الـ URL، وإلا يرجع القديم
-    const uploadImageIfAny = async () => {
-        if (!imageFile) return editProduct?.imageUrl || "";
-        const path = `products/${Date.now()}_${imageFile.name}`;
-        const storageRef = ref(storage, path);
-        const snap = await uploadBytes(storageRef, imageFile);
-        const url = await getDownloadURL(snap.ref);
-        return url;
-    };
-
     const resetForm = () => {
         setEditProduct(null);
         setTitle("");
@@ -68,8 +80,13 @@ export default function AdminProducts() {
     const handleSave = async (e) => {
         e.preventDefault();
         setUploading(true);
+
         try {
-            const imageUrl = await uploadImageIfAny();
+            // ✳️ لو في صورة جديدة ارفعها على Imgbb
+            let imageUrl = editProduct?.imageUrl || "";
+            if (imageFile) {
+                imageUrl = await uploadImageToImgbb(imageFile);
+            }
 
             if (editProduct) {
                 // تعديل
@@ -77,7 +94,6 @@ export default function AdminProducts() {
                     title: title.trim(),
                     price: Number(price) || 0,
                     description: desc.trim(),
-                    // لو ما فيش صورة جديدة، هنحتفظ بالقديمة
                     imageUrl: imageUrl || editProduct.imageUrl || "",
                     updatedAt: serverTimestamp(),
                 };
@@ -97,7 +113,7 @@ export default function AdminProducts() {
             resetForm();
         } catch (err) {
             console.error(err);
-            alert("❌ حصل خطأ أثناء الحفظ/الرفع.");
+            alert("❌ حصل خطأ أثناء الحفظ / رفع الصورة.");
             setUploading(false);
         }
     };

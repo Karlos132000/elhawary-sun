@@ -7,18 +7,26 @@ import ProjectsPage from "../pages/ProjectsPage";
 import ServicesPage from "../pages/ServicesPage";
 import QuotePage from "../pages/QuotePage";
 
-import AdminLogin from "../pages/AdminLogin";
-import AdminProducts from "../pages/AdminProducts";
 import ProductsPage from "../pages/ProductsPage";
 import ProductDetails from "../pages/ProductDetails";
 
-import ProtectedAdminRoute from "../components/ProtectedAdminRoute";
-import AdminIndex from "../pages/AdminIndex"; // 👈 جديد
+import AdminLogin from "../pages/AdminLogin";
+import AdminProducts from "../pages/AdminProducts";
+import AdminOrders from "../admin/AdminOrders";
+import AdminQuotes from "../admin/AdminQuotes";
+import AdminProjects from "../admin/AdminProjects";
+import DashboardHome from "../admin/DashboardHome";
 
+import ProtectedAdminRoute from "../components/ProtectedAdminRoute";
+import AdminIndex from "../pages/AdminIndex";
+
+// ⭐ حل المشكلة الأساسي
+import AdminLayout from "../admin/AdminLayout";
+import ProjectDetails from "../pages/ProjectDetails";
 export default function AppRouter() {
     return (
         <Routes>
-            {/* عام */}
+            {/* صفحات عامة */}
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/services" element={<ServicesPage />} />
@@ -26,20 +34,80 @@ export default function AppRouter() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/quote" element={<QuotePage />} />
 
-            {/* المتجر للزوار */}
+            {/* متجر العملاء */}
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/product/:id" element={<ProductDetails />} />
 
             {/* الأدمن */}
-            <Route path="/admin" element={<AdminIndex />} />          {/* 👈 حل صفحة فاضية */}
+            <Route path="/admin" element={<AdminIndex />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            {/* صفحة مشروع منفرد */}
+            <Route path="/project/:id" element={<ProjectDetails />} />  {/*
+
+            {/* Dashboard Home */}
+            <Route
+                path="/admin/dashboard"
+                element={
+                    <ProtectedAdminRoute>
+                        <AdminLayout>
+                            <DashboardHome />
+                        </AdminLayout>
+                    </ProtectedAdminRoute>
+                }
+            />
+
+            {/* Orders */}
+            <Route
+                path="/admin/orders"
+                element={
+                    <ProtectedAdminRoute>
+                        <AdminLayout>
+                            <AdminOrders />
+                        </AdminLayout>
+                    </ProtectedAdminRoute>
+                }
+            />
+
+            {/* Quotes */}
+            <Route
+                path="/admin/quotes"
+                element={
+                    <ProtectedAdminRoute>
+                        <AdminLayout>
+                            <AdminQuotes />
+                        </AdminLayout>
+                    </ProtectedAdminRoute>
+                }
+            />
+
+            {/* Products */}
             <Route
                 path="/admin/products"
                 element={
                     <ProtectedAdminRoute>
-                        <AdminProducts />
+                        <AdminLayout>
+                            <AdminProducts />
+                        </AdminLayout>
                     </ProtectedAdminRoute>
                 }
+            />
+
+            {/* Projects */}
+            <Route
+                path="/admin/projects"
+                element={
+                    <ProtectedAdminRoute>
+                        <AdminLayout>
+                            <AdminProjects />
+                        </AdminLayout>
+                    </ProtectedAdminRoute>
+                }
+            />
+
+            {/* 404 */}
+            <Route
+                path="*"
+                element={<p className="text-center p-10">الصفحة غير موجودة</p>}
             />
         </Routes>
     );
