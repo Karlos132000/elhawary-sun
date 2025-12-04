@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import useAdmin from "../hooks/useAdmin";
+import useAdmin from "../hooks/useAdmin.js";
 
 export default function AdminIndex() {
     const { loading, isAdmin } = useAdmin();
