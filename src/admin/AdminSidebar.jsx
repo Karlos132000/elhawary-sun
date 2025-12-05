@@ -18,20 +18,30 @@ export default function AdminSidebar() {
             <h2 className="text-2xl font-bold text-gold mb-8">لوحة التحكم</h2>
 
             <nav className="flex flex-col gap-3">
+
                 <Link className={linkClass("/admin/dashboard")} to="/admin/dashboard">
                     الرئيسية
                 </Link>
+
                 <Link className={linkClass("/admin/orders")} to="/admin/orders">
                     الطلبات
                 </Link>
+
                 <Link className={linkClass("/admin/quotes")} to="/admin/quotes">
                     عروض السعر
                 </Link>
+
                 <Link className={linkClass("/admin/products")} to="/admin/products">
                     المنتجات
                 </Link>
+
                 <Link className={linkClass("/admin/projects")} to="/admin/projects">
                     المشاريع
+                </Link>
+
+                {/* ⭐ زر الكورسات التعليمية الجديد */}
+                <Link className={linkClass("/admin/courses")} to="/admin/courses">
+                    الكورسات التعليمية
                 </Link>
 
                 <Link

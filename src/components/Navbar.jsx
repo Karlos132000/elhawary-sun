@@ -33,6 +33,8 @@ export default function Navbar() {
                             <li><Link to="/projects">مشاريعنا</Link></li>
                             <li><Link to="/contact">تواصل معنا</Link></li>
                             <li><Link to="/quote">عرض سعر</Link></li>
+                            <li><Link to="/courses">كورسات تعليمية</Link></li>
+
                         </ul>
                     </nav>
 

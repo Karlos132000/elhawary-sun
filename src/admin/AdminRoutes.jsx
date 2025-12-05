@@ -8,6 +8,7 @@ import AdminProducts from "./AdminProducts.jsx";
 import AdminProjects from "./AdminProjects.jsx";
 import AdminOrders from "./AdminOrders.jsx";
 import AdminQuotes from "./AdminQuotes.jsx";
+import AdminCourses from "./AdminCourses.jsx";
 
 import ProtectedAdminRoute from "../components/ProtectedAdminRoute.jsx";
 
@@ -21,48 +22,74 @@ export default function AdminRoutes() {
             {/* صفحة تسجيل الدخول */}
             <Route path="login" element={<AdminLogin />} />
 
-            {/* لوحة التحكم */}
+            {/* الصفحة الرئيسية */}
             <Route
                 path="dashboard"
                 element={
                     <ProtectedAdminRoute>
-                        <AdminLayout><DashboardHome /></AdminLayout>
+                        <AdminLayout>
+                            <DashboardHome />
+                        </AdminLayout>
                     </ProtectedAdminRoute>
                 }
             />
 
+            {/* المنتجات */}
             <Route
                 path="products"
                 element={
                     <ProtectedAdminRoute>
-                        <AdminLayout><AdminProducts /></AdminLayout>
+                        <AdminLayout>
+                            <AdminProducts />
+                        </AdminLayout>
                     </ProtectedAdminRoute>
                 }
             />
 
+            {/* المشاريع */}
             <Route
                 path="projects"
                 element={
                     <ProtectedAdminRoute>
-                        <AdminLayout><AdminProjects /></AdminLayout>
+                        <AdminLayout>
+                            <AdminProjects />
+                        </AdminLayout>
                     </ProtectedAdminRoute>
                 }
             />
 
+            {/* الطلبات */}
             <Route
                 path="orders"
                 element={
                     <ProtectedAdminRoute>
-                        <AdminLayout><AdminOrders /></AdminLayout>
+                        <AdminLayout>
+                            <AdminOrders />
+                        </AdminLayout>
                     </ProtectedAdminRoute>
                 }
             />
 
+            {/* عروض السعر */}
             <Route
                 path="quotes"
                 element={
                     <ProtectedAdminRoute>
-                        <AdminLayout><AdminQuotes /></AdminLayout>
+                        <AdminLayout>
+                            <AdminQuotes />
+                        </AdminLayout>
+                    </ProtectedAdminRoute>
+                }
+            />
+
+            {/* كورسات تعليمية */}
+            <Route
+                path="courses"
+                element={
+                    <ProtectedAdminRoute>
+                        <AdminLayout>
+                            <AdminCourses />
+                        </AdminLayout>
                     </ProtectedAdminRoute>
                 }
             />

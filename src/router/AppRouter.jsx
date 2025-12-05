@@ -10,6 +10,8 @@ import QuotePage from "../pages/QuotePage.jsx";
 import ProductsPage from "../pages/ProductsPage.jsx";
 import ProductDetails from "../pages/ProductDetails.jsx";
 import ProjectDetails from "../pages/ProjectDetails.jsx";
+import CoursesPage from "./../pages/CoursesPage.jsx";
+import CourseViewer from "../pages/CourseViewer";
 
 // مسارات الأدمن
 import AdminRoutes from "../admin/AdminRoutes.jsx";
@@ -26,6 +28,11 @@ export default function AppRouter() {
             <Route path="/project/:id" element={<ProjectDetails />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/quote" element={<QuotePage />} />
+            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/course-viewer" element={<CourseViewer />} />
+
+
+
 
             {/* متجر العملاء */}
             <Route path="/products" element={<ProductsPage />} />
