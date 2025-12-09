@@ -36,14 +36,20 @@ export default function ProjectsPage() {
                                     navigation
                                     pagination={{ clickable: true }}
                                     modules={[Navigation, Pagination]}
-                                    className="w-full h-[220px] md:h-[250px] bg-gray-200 overflow-hidden"
+                                    className="w-full bg-gray-200"
+                                    style={{ height: "220px" }}   // ⭐ أهم شيء
                                 >
                                     {project.images?.map((img, i) => (
-                                        <SwiperSlide key={i}>
+                                        <SwiperSlide key={i} style={{ height: "220px" }}>
                                             <img
                                                 src={img}
-                                                className="w-full h-full object-cover"
                                                 alt={project.title + i}
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    objectFit: "cover",
+                                                    display: "block"
+                                                }}
                                             />
                                         </SwiperSlide>
                                     ))}
