@@ -33,14 +33,22 @@ export default function ProjectsPage() {
 
                                 {/* ⭐ سلايدر الصور */}
                                 <Swiper
-                                    navigation
-                                    pagination={{ clickable: true }}
                                     modules={[Navigation, Pagination]}
-                                    className="w-full bg-gray-200"
-                                    style={{ height: "220px" }}   // ⭐ أهم شيء
+                                    navigation={false}
+                                    pagination={{ clickable: true }}
+
+                                    // ⭐ أهم جزء: إجبار ارتفاع السلايدر على أندرويد
+                                    style={{ width: "100%", height: "230px" }}
+                                    className="bg-gray-200 overflow-hidden rounded-lg"
                                 >
                                     {project.images?.map((img, i) => (
-                                        <SwiperSlide key={i} style={{ height: "220px" }}>
+                                        <SwiperSlide key={i}
+                                                     style={{
+                                                         width: "100%",
+                                                         height: "230px",     // ⭐ لازم يتكرر هنا أيضاً
+                                                         overflow: "hidden",
+                                                     }}
+                                        >
                                             <img
                                                 src={img}
                                                 alt={project.title + i}
@@ -48,12 +56,16 @@ export default function ProjectsPage() {
                                                     width: "100%",
                                                     height: "100%",
                                                     objectFit: "cover",
-                                                    display: "block"
+                                                    display: "block", // ⭐ يصلح مشكلة Android rendering
+                                                }}
+                                                onError={(e) => {
+                                                    e.target.src = "/fallback.jpg"; // في حالة أي خطأ مستقبلي
                                                 }}
                                             />
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
+
 
 
                                 <div className="p-4 text-center">
