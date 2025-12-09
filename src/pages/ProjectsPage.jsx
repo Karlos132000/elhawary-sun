@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
-
 import { Link } from "react-router-dom";
 
-/* Swiper */
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -24,38 +22,45 @@ export default function ProjectsPage() {
     return (
         <div className="pt-20 pb-20 bg-gray-50" dir="rtl">
             <div className="container mx-auto px-4">
-                <h1 className="text-4xl font-bold text-center text-gold mb-10">مشاريعنا</h1>
+                <h1 className="text-4xl font-bold text-center text-gold mb-10">
+                    مشاريعنا
+                </h1>
 
                 <div className="grid md:grid-cols-3 gap-8">
                     {projects.map((project) => (
                         <Link to={`/project/${project.id}`} key={project.id}>
                             <div className="bg-white shadow rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition">
 
-                                {/* ⭐ سلايدر الصور */}
+                                {/* ⭐ سلايدر معدل ليعمل 100% على الموبايل */}
                                 <Swiper
-                                    navigation
-                                    pagination={{ clickable: true }}
                                     modules={[Navigation, Pagination]}
-                                    className="w-full h-64"
+                                    pagination={{ clickable: true }}
+                                    navigation={false}
+                                    lazy={true}
+                                    className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200"
                                 >
                                     {project.images?.map((img, i) => (
                                         <SwiperSlide key={i}>
                                             <img
-                                                src={img}
-                                                className="w-full h-64 object-cover"
+                                                data-src={img}
+                                                loading="lazy"
+                                                className="swiper-lazy w-full h-full object-cover"
                                                 alt={project.title + i}
                                             />
+                                            <div className="swiper-lazy-preloader"></div>
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
 
                                 <div className="p-4 text-center">
-                                    <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+                                    <h3 className="text-2xl font-bold mb-2">
+                                        {project.title}
+                                    </h3>
+
                                     <p className="text-gray-600">
                                         {project.description?.substring(0, 60)}...
                                     </p>
                                 </div>
-
                             </div>
                         </Link>
                     ))}
