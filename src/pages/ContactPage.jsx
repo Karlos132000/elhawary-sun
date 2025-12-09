@@ -20,7 +20,7 @@ export default function Contact() {
                     <p className="flex items-center gap-3">
                         <FaWhatsapp className="text-green-600 text-3xl" />
                         <span>واتساب:</span>
-                        <span className="text-gray-700 font-normal">01271361380</span>
+                        <span className="text-gray-700 font-normal">01001993667</span>
                     </p>
 
                     <p className="flex items-center gap-3">
@@ -32,7 +32,7 @@ export default function Contact() {
                     <p className="flex items-center gap-3">
                         <FaEnvelope className="text-blue-600 text-2xl" />
                         <span>البريد الإلكتروني:</span>
-                        <span className="text-gray-700 font-normal">karlosashraf80@gmail.com</span>
+                        <span className="text-gray-700 font-normal">elhawarysun@gmail.com</span>
                     </p>
 
                 </div>
