@@ -36,7 +36,7 @@ export default function ProjectsPage() {
                                     navigation
                                     pagination={{ clickable: true }}
                                     modules={[Navigation, Pagination]}
-                                    className="w-full aspect-[4/3] bg-gray-200 overflow-hidden"
+                                    className="w-full h-[220px] md:h-[250px] bg-gray-200 overflow-hidden"
                                 >
                                     {project.images?.map((img, i) => (
                                         <SwiperSlide key={i}>
@@ -48,6 +48,7 @@ export default function ProjectsPage() {
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
+
 
                                 <div className="p-4 text-center">
                                     <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
