@@ -71,7 +71,7 @@ export default function Navbar() {
                     <Link to="/projects" onClick={() => setOpen(false)}>مشاريعنا</Link>
                     <Link to="/contact" onClick={() => setOpen(false)}>تواصل معنا</Link>
                     <Link to="/quote" onClick={() => setOpen(false)}>عرض سعر</Link>
-                    <Link to="/Courses"onClick={() => setOpen(false)}>كورسات تعليمية</Link>
+                    <Link to="/courses"onClick={() => setOpen(false)}>كورسات تعليمية</Link>
                 </div>
             </div>
 
