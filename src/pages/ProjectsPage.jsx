@@ -36,35 +36,36 @@ export default function ProjectsPage() {
                                     modules={[Navigation, Pagination]}
                                     navigation={false}
                                     pagination={{ clickable: true }}
-
-                                    // ⭐ أهم جزء: إجبار ارتفاع السلايدر على أندرويد
                                     style={{ width: "100%", height: "230px" }}
-                                    className="bg-gray-200 overflow-hidden rounded-lg"
+                                    className="overflow-hidden rounded-lg"
                                 >
                                     {project.images?.map((img, i) => (
-                                        <SwiperSlide key={i}
-                                                     style={{
-                                                         width: "100%",
-                                                         height: "230px",     // ⭐ لازم يتكرر هنا أيضاً
-                                                         overflow: "hidden",
-                                                     }}
-                                        >
-                                            <img
-                                                src={img}
-                                                alt={project.title + i}
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    objectFit: "cover",
-                                                    display: "block", // ⭐ يصلح مشكلة Android rendering
-                                                }}
-                                                onError={(e) => {
-                                                    e.target.src = "/fallback.jpg"; // في حالة أي خطأ مستقبلي
-                                                }}
-                                            />
+                                        <SwiperSlide key={i} style={{ width: "100%", height: "230px" }}>
+
+                                            <div style={{
+                                                width: "100%",
+                                                height: "230px",
+                                                backgroundColor: "#e5e0c3"  // نفس اللون الذي ظهر عندك
+                                            }}>
+                                                <img
+                                                    src={img}
+                                                    alt={project.title}
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        objectFit: "cover",
+                                                        display: "block",
+                                                    }}
+                                                    onLoad={(e) => {
+                                                        e.target.parentNode.style.backgroundColor = "transparent";
+                                                    }}
+                                                />
+                                            </div>
+
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
+
 
 
 
